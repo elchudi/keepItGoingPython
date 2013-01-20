@@ -4,7 +4,8 @@ import wave
 import sys
 import zmq
 import ntplib
-from time import ctime
+import time
+#from time import ctime
 
 context   = zmq.Context(1)
 publisher = context.socket(zmq.PUB)
@@ -35,14 +36,13 @@ def play(filepath):
     #print stime
     #publisher.send_multipart(["S", str(stime)])
     while data != '':
-        i = i + 1
+        #i = i + 1
         #print wf.tell()
         data = wf.readframes(chunk)
         stream.write(data)
         
-        if(not i % 223):
-            publisher.send_multipart(["B", str(wf.tell()-chunk)])
-            publisher.send_multipart(["SECS", str((wf.tell()-chunk)/rate)])
+        #publisher.send_multipart(["B", str(wf.tell()-chunk), str(time.time())])
+        publisher.send_multipart(["SECS", repr((wf.tell()-chunk)/rate), repr(time.time()),repr(wf.tell()-chunk)])
        
     stream.close()
     p.terminate()
